@@ -1,0 +1,15 @@
+{
+  "name": "roastbyai",
+  "owner": {
+    "name": "Roast by AI",
+    "url": "https://roastbyai.com"
+  },
+  "plugins": [
+    {
+      "name": "roastbyai",
+      "source": "./plugins/roastbyai",
+      "description": "Roast a website that is not live yet, fix the findings in your code, re-roast until the score clears your target. Eight categories, scores with deltas, findings with locations.",
+      "version": "0.1.0"
+    }
+  ]
+}

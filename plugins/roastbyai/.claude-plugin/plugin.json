@@ -1,0 +1,13 @@
+{
+  "name": "roastbyai",
+  "description": "Critic in the loop for sites you are building: roast a local, staging or preview site, get findings with locations, fix, re-roast until the score clears your target.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Roast by AI",
+    "url": "https://roastbyai.com"
+  },
+  "homepage": "https://roastbyai.com/mcp/claude-code",
+  "repository": "https://github.com/roastbyai/claude-plugin",
+  "license": "MIT",
+  "keywords": ["website", "audit", "seo", "accessibility", "conversion", "roast", "qa"]
+}
