@@ -1,6 +1,6 @@
 {
   "name": "roastbyai",
-  "description": "Roast by AI for Claude Code: a website critic in your coding loop. Roast a site that is not live yet, fix the findings, re-roast until the score clears your target.",
+  "description": "Roast by AI for coding agents: a website critic in your coding loop. Roast a site that is not live yet, fix the findings, re-roast until the score clears your target. Works with Claude Code, Cursor and Codex.",
   "owner": {
     "name": "Roast by AI",
     "url": "https://roastbyai.com"
@@ -10,7 +10,7 @@
       "name": "roastbyai",
       "source": "./plugins/roastbyai",
       "description": "Roast a website that is not live yet, fix the findings in your code, re-roast until the score clears your target. Eight categories, scores with deltas, findings with locations.",
-      "version": "0.1.2"
+      "version": "0.1.3"
     }
   ]
 }

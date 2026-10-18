@@ -81,7 +81,8 @@ server. Do not submit it again, which would spend another credit. Find its id wi
 about every 15 seconds until the status is `completed` or `failed`. If it is still processing
 after five minutes, stop and tell the user the roast is stuck, with its id.
 
-Read `structuredContent.findings`. Each finding has an `id` (stable across iterations, such
+Read the `findings` list in the result (the tool's structured content, also summarised in its
+text). Each finding has an `id` (stable across iterations, such
 as `seo-2`), a `category`, a `severity` (high, medium, low), a `title`, a `description`, a
 `location` (a CSS selector, a section name, or the visible text of the element) and
 `evidence` (the issues the critic saw in that category).
@@ -90,7 +91,7 @@ as `seo-2`), a `category`, a `severity` (high, medium, low), a `title`, a `descr
 
 Take the high-severity findings first, then medium. On tunnel roasts PageSpeed does not run, so
 performance is not measured; give performance findings the lowest priority there. For each one, map the `location` to a
-file in this repository with Grep on the selector, the visible text or the section name.
+file in this repository by searching for the selector, the visible text or the section name.
 Skip a finding when:
 
 - it cannot be mapped to code you can edit here (third-party widgets, hosting-level

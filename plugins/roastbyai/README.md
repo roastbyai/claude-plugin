@@ -19,6 +19,9 @@ findings in your code, re-roasts, and stops when the score clears 80, after five
 when nothing moves for two rounds. The report lists every version with its deltas, what was
 fixed and where, and what needs your input.
 
+Using Cursor or Codex? The same MCP server and skill work there too; setup is in the
+[repository README](../../README.md).
+
 ## What you need
 
 - Claude Code and a free Roast by AI account. The first tool call opens a browser window to
