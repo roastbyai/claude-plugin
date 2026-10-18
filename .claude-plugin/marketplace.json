@@ -1,5 +1,6 @@
 {
   "name": "roastbyai",
+  "description": "Roast by AI for Claude Code: a website critic in your coding loop. Roast a site that is not live yet, fix the findings, re-roast until the score clears your target.",
   "owner": {
     "name": "Roast by AI",
     "url": "https://roastbyai.com"
