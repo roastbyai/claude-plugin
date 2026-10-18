@@ -1,7 +1,7 @@
 {
   "name": "roastbyai",
   "description": "Critic in the loop for sites you are building: roast a local, staging or preview site, get findings with locations, fix, re-roast until the score clears your target.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": {
     "name": "Roast by AI",
     "url": "https://roastbyai.com"

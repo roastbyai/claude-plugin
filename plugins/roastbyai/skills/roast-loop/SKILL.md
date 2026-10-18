@@ -88,7 +88,8 @@ as `seo-2`), a `category`, a `severity` (high, medium, low), a `title`, a `descr
 
 ## 4. Pick what to fix
 
-Take the high-severity findings first, then medium. For each one, map the `location` to a
+Take the high-severity findings first, then medium. On tunnel roasts PageSpeed does not run, so
+performance is not measured; give performance findings the lowest priority there. For each one, map the `location` to a
 file in this repository with Grep on the selector, the visible text or the section name.
 Skip a finding when:
 
@@ -109,7 +110,11 @@ check) and confirm the dev server still answers on the port. Do not re-roast bro
 
 Call `reroast_and_wait` with the saved id, with the same timeout handling as step 3: after a
 timeout, poll `get_roast` with the same id rather than re-roasting again. Compare
-`overall_score`, `overall_score_delta` and `category_deltas` with the previous iteration. If the server does
+`overall_score`, `overall_score_delta` and `category_deltas` with the previous iteration.
+
+Scores carry some noise: the same unchanged page can land up to 3 points apart overall, and a
+single category up to about 10. Treat an overall move of 3 points or less as no change, and
+judge a category by whether the finding you fixed disappeared, not by a small score move. If the server does
 not offer `reroast_and_wait`, fall back to `roast_and_wait` on the same URL; the loop still
 works, only the deltas are lost.
 
@@ -117,7 +122,7 @@ works, only the deltas are lost.
 
 - the overall score is at or above the target, or
 - the number of roasts reached `max`, or
-- the score did not improve for two iterations in a row, or
+- the overall score moved by 3 points or less for two iterations in a row, or
 - credits ran out (the tool returns an "insufficient credits" error).
 
 Never re-roast without having changed something since the last roast.
@@ -127,7 +132,7 @@ Never re-roast without having changed something since the last roast.
 Stop the tunnel. Then print:
 
 1. A table with one row per version: version, overall score, delta, and the per-category
-   deltas that moved.
+   deltas that moved. Mark overall deltas of 3 points or less as within noise.
 2. The list of findings you fixed, with the file you changed for each.
 3. The findings you skipped and why, especially the ones that need the user's input.
 4. Credits spent, and the current balance from `check_credits`.
