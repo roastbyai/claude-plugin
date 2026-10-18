@@ -9,7 +9,7 @@
       "name": "roastbyai",
       "source": "./plugins/roastbyai",
       "description": "Roast a website that is not live yet, fix the findings in your code, re-roast until the score clears your target. Eight categories, scores with deltas, findings with locations.",
-      "version": "0.1.0"
+      "version": "0.1.1"
     }
   ]
 }

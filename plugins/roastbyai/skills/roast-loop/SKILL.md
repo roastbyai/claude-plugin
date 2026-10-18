@@ -1,7 +1,7 @@
 ---
 name: roast-loop
 description: Roast a website that is not live yet (localhost through a tunnel, a staging server, or a preview deployment), fix the highest-severity findings in the code, re-roast, and repeat until the score clears a target. Use when the user asks to roast, review, critique, QA or improve a site they are building, or mentions Roast by AI. Arguments: a URL or a local port, optionally "target <score>" (default 80) and "max <iterations>" (default 5).
-allowed-tools: mcp__plugin_roastbyai_roastbyai__check_credits mcp__plugin_roastbyai_roastbyai__roast_and_wait mcp__plugin_roastbyai_roastbyai__reroast_and_wait mcp__plugin_roastbyai_roastbyai__get_roast mcp__plugin_roastbyai_roastbyai__roast_history Read Edit Write Grep Glob Bash
+allowed-tools: mcp__plugin_roastbyai_roastbyai__check_credits mcp__plugin_roastbyai_roastbyai__roast_and_wait mcp__plugin_roastbyai_roastbyai__reroast_and_wait mcp__plugin_roastbyai_roastbyai__get_roast mcp__plugin_roastbyai_roastbyai__list_roasts mcp__plugin_roastbyai_roastbyai__roast_history Read Edit Write Grep Glob Bash
 ---
 
 # Roast loop
@@ -23,6 +23,13 @@ Parse the arguments first:
 Roast by AI crawls from its own servers. It cannot reach `localhost`, private IPs, or
 Docker service names, and it refuses them with an explanation. For a local port:
 
+0. Check whether the local server runs a framework debug mode that exposes internals over
+   HTTP: the Symfony profiler (`/_profiler`), Laravel Telescope or Debugbar, the Django debug
+   toolbar or `DEBUG=True` error pages, Rails web-console. Anyone with the tunnel address can
+   open those pages, and they can show environment variables, including API keys. If so, tell
+   the user and offer to roast a production build instead (`npm run build && npm run preview`,
+   `APP_ENV=prod`, `DEBUG=False`). Continue with the dev server only if the user agrees.
+
 1. Check the dev server answers: `curl -sS -o /dev/null -w '%{http_code}' http://localhost:PORT/`.
    If it does not, tell the user to start it and stop.
 2. Check `cloudflared` is installed (`command -v cloudflared`). If not, print the install
@@ -33,7 +40,10 @@ Docker service names, and it refuses them with an explanation. For a local port:
    `cloudflared tunnel --url http://localhost:PORT > /tmp/roastbyai-tunnel.log 2>&1 &`
    Then poll the log (up to 30 seconds) for a line containing `https://` and
    `.trycloudflare.com`. That address is the roast target.
-4. Verify the tunnel serves the site: `curl -sS -o /dev/null -w '%{http_code}' <tunnel url>`.
+4. Wait until the address resolves and serves the site. A new quick-tunnel address can take
+   one to two minutes to resolve, and the operating system may cache the first "not found",
+   so poll for up to two minutes, every three seconds:
+   `curl -sS -o /dev/null -w '%{http_code}' <tunnel url>`. Only give up after two minutes.
    A `403` or a "Blocked request" body usually means the dev server rejects unknown host
    names. Tell the user which setting to change and stop:
    - Vite: `server.allowedHosts: true` (or add the `.trycloudflare.com` host) in `vite.config`.
@@ -43,6 +53,10 @@ Docker service names, and it refuses them with an explanation. For a local port:
 
 While the tunnel runs, anyone with the random address can reach the dev server. Say so once,
 and stop the tunnel when the loop ends (`kill` the background process).
+
+Keep the same tunnel running for the whole loop. Every re-roast fetches the address the first
+roast was made with. A restarted tunnel gets a new random address, so if the tunnel dies
+mid-loop, start a new tunnel and a new roast with `roast_and_wait` instead of re-roasting.
 
 ## 2. Check the budget
 
@@ -58,6 +72,14 @@ being explicit saves a round trip. For a public staging or preview URL leave Pag
 
 Keep the returned `id`. Every later iteration re-roasts that id so the versions chain and
 the deltas are computed for you.
+
+A roast takes about a minute: roughly 20 seconds to crawl and 50 to analyse. If
+`roast_and_wait` or `reroast_and_wait` returns an error such as "The operation timed out", or
+returns while the status is still `pending` or `processing`, the roast is still running on the
+server. Do not submit it again, which would spend another credit. Find its id with
+`list_roasts` (the newest entry for the URL) when the timeout hid it, then call `get_roast`
+about every 15 seconds until the status is `completed` or `failed`. If it is still processing
+after five minutes, stop and tell the user the roast is stuck, with its id.
 
 Read `structuredContent.findings`. Each finding has an `id` (stable across iterations, such
 as `seo-2`), a `category`, a `severity` (high, medium, low), a `title`, a `description`, a
@@ -85,8 +107,9 @@ check) and confirm the dev server still answers on the port. Do not re-roast bro
 
 ## 6. Re-roast
 
-Call `reroast_and_wait` with the saved id. Compare `overall_score`,
-`overall_score_delta` and `category_deltas` with the previous iteration. If the server does
+Call `reroast_and_wait` with the saved id, with the same timeout handling as step 3: after a
+timeout, poll `get_roast` with the same id rather than re-roasting again. Compare
+`overall_score`, `overall_score_delta` and `category_deltas` with the previous iteration. If the server does
 not offer `reroast_and_wait`, fall back to `roast_and_wait` on the same URL; the loop still
 works, only the deltas are lost.
 
