@@ -1,7 +1,7 @@
 ---
 name: roast-loop
 description: Roast a website that is not live yet (localhost through a tunnel, a staging server, or a preview deployment), fix the highest-severity findings in the code, re-roast, and repeat until the score clears a target. Use when the user asks to roast, review, critique, QA or improve a site they are building, or mentions Roast by AI. Arguments: a URL or a local port, optionally "target <score>" (default 80) and "max <iterations>" (default 5).
-allowed-tools: mcp__plugin_roastbyai_roastbyai__check_credits mcp__plugin_roastbyai_roastbyai__roast_and_wait mcp__plugin_roastbyai_roastbyai__reroast_and_wait mcp__plugin_roastbyai_roastbyai__get_roast mcp__plugin_roastbyai_roastbyai__list_roasts mcp__plugin_roastbyai_roastbyai__roast_history Read Edit Write Grep Glob Bash
+allowed-tools: mcp__plugin_roastbyai_roastbyai__check_credits mcp__plugin_roastbyai_roastbyai__roast_and_wait mcp__plugin_roastbyai_roastbyai__reroast_and_wait mcp__plugin_roastbyai_roastbyai__get_roast mcp__plugin_roastbyai_roastbyai__list_roasts mcp__plugin_roastbyai_roastbyai__roast_history Read Grep Glob
 ---
 
 # Roast loop
@@ -32,9 +32,9 @@ Docker service names, and it refuses them with an explanation. For a local port:
 
 1. Check the dev server answers: `curl -sS -o /dev/null -w '%{http_code}' http://localhost:PORT/`.
    If it does not, tell the user to start it and stop.
-2. Check `cloudflared` is installed (`command -v cloudflared`). If not, print the install
-   line for their platform (`brew install cloudflared` on macOS; packages exist for Linux and
-   Windows) and stop. Do not fall back to ngrok's free tier: it puts a warning page in front
+2. Check `cloudflared` is installed (`command -v cloudflared`). If not, ask the user to install
+   it (Cloudflare publishes installers for macOS, Linux and Windows) and stop. Do not install it
+   yourself. Do not fall back to ngrok's free tier: it puts a warning page in front
    of browser visits, so screenshots would show the warning instead of the site.
 3. Start the tunnel in the background and capture its output:
    `cloudflared tunnel --url http://localhost:PORT > /tmp/roastbyai-tunnel.log 2>&1 &`

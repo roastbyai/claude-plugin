@@ -31,9 +31,9 @@ Docker service names, and it refuses them with an explanation. For a local port:
 
 1. Check the dev server answers: `curl -sS -o /dev/null -w '%{http_code}' http://localhost:PORT/`.
    If it does not, tell the user to start it and stop.
-2. Check `cloudflared` is installed (`command -v cloudflared`). If not, print the install
-   line for their platform (`brew install cloudflared` on macOS; packages exist for Linux and
-   Windows) and stop. Do not fall back to ngrok's free tier: it puts a warning page in front
+2. Check `cloudflared` is installed (`command -v cloudflared`). If not, ask the user to install
+   it (Cloudflare publishes installers for macOS, Linux and Windows) and stop. Do not install it
+   yourself. Do not fall back to ngrok's free tier: it puts a warning page in front
    of browser visits, so screenshots would show the warning instead of the site.
 3. Start the tunnel in the background and capture its output:
    `cloudflared tunnel --url http://localhost:PORT > /tmp/roastbyai-tunnel.log 2>&1 &`
