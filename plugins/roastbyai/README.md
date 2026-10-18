@@ -61,6 +61,17 @@ Some dev servers refuse unknown host names. Vite needs `server.allowedHosts`, Ra
 host in `config.hosts`, Django needs it in `ALLOWED_HOSTS`. The skill detects the refusal and
 tells you which one.
 
+## Data and services
+
+- **Roast by AI** (the MCP connector) receives the URL you roast and your tool calls. It crawls
+  that page, stores the roast with its page text and screenshots while your account is active,
+  and analyses it with Anthropic's Claude and, for public sites, Google PageSpeed. Roasts on free
+  accounts are public. See the [privacy policy](https://www.roastbyai.com/privacy).
+- **Cloudflare** carries your dev server's traffic when the skill roasts a local port through a
+  quick tunnel. The skill starts the tunnel only for that, and stops it when the loop ends.
+- Nothing else: the skill reads and edits files in your repository and sends no other data off
+  your machine.
+
 ## Privacy
 
 Roasts on free accounts are public by default and can appear in the public gallery. A

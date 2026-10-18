@@ -97,6 +97,17 @@ no account. While the tunnel runs, anyone with the random address can reach your
 the skill closes it when the loop ends and warns you first if the dev server exposes debug pages
 such as the Symfony profiler or Django's debug mode.
 
+## Data and services
+
+- **Roast by AI** (the MCP connector) receives the URL you roast and your tool calls. It crawls
+  that page, stores the roast with its page text and screenshots while your account is active,
+  and analyses it with Anthropic's Claude and, for public sites, Google PageSpeed. Roasts on free
+  accounts are public. See the [privacy policy](https://www.roastbyai.com/privacy).
+- **Cloudflare** carries your dev server's traffic when the skill roasts a local port through a
+  quick tunnel. The skill starts the tunnel only for that, and stops it when the loop ends.
+- Nothing else: the skill reads and edits files in your repository and sends no other data off
+  your machine.
+
 ## For maintainers
 
 The Claude Code plugin's copy, `plugins/roastbyai/skills/roast-loop/SKILL.md`, is the source of
